@@ -4,9 +4,9 @@ v_sum = zeros(rank, 1);
 % Iterate through each column's indices and columns
 % for j = 1:dim
 indices = indices{row};  % Get the indices for the j-th column
-for j = indices
+for j = 1: length(indices)
     % Find the values in the X matrix for the i-th index and j-th column
-    vector = V(:, j);
+    vector = V(:, indices(j));
     v_sum = v_sum + vector;
 end
 

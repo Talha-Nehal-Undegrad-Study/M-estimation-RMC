@@ -35,10 +35,12 @@ for iter = 1 : maxiter
         % Get num outlier 
         num_col_outliers = get_num_outliers_cols(X_Omega, c, indices_col, j);
         % Get sum < c for X_Omega
-        sumlessc_col = getxsumlessc_col(X_Omega, indices_col, j);
+        sumlessc_col = getxsumlessc_col(X_Omega, indices_col, j, c);
         % Get sum of I_j U transpose rows
-        u_sum = utransposesum(u_ cell{iter}, indices_col, j);
-        v_upd(:, j) = (num_col_outliers + sumlessc_col) / u_sum;
+        u_sum = utransposesum(u_cell{iter}, indices_col, j);
+        val = (num_col_outliers + sumlessc_col) ./ u_sum;
+        disp(size(val))
+        v_upd(:, j) = (num_col_outliers + sumlessc_col) ./ u_sum;
     end
     % Store updated v
     v_cell{iter + 1} = v_upd;
@@ -53,7 +55,7 @@ for iter = 1 : maxiter
         sumlessc_row = getxsumlessc_row(X_Omega, indices_row, i, c);
         % Get sum of I_j U transpose rows
         v_sum = vsum(v_cell{iter + 1}, indices_row, i);
-        u_upd(i, :) = ((num_row_outliers + sumlessc_row) / v_sum)';
+        u_upd(i, :) = ((num_row_outliers + sumlessc_row) ./ v_sum)';
     end
     % Store updated u
     u_cell{iter + 1} = u_upd;

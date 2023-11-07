@@ -36,7 +36,7 @@ maxiter = 50;
 % r
 [X_recovered, loss_recovered] = rmc_huber(X_Omega, array_Omega, rank, maxiter);
 
-fprintf('\nMinimum MSE Loss with Huber M Estimation: %f', min(loss_recovered))
+disp(loss_recovered)
 
 figure
 semilogy(loss_recovered,'r','LineWidth',1.2);
