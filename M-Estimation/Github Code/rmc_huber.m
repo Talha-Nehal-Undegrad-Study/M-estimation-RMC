@@ -19,7 +19,7 @@ v_cell = cell(1, maxiter);
 v_cell{1} = V_1;
 
 % For storing loss
-loss = cell(1, maxiter);
+loss = zeros(1, maxiter);
 
 % Determine the set of indices where each column of the matrix array_Omega
 % is 1 and store it in a cell array where element at index i will correspond
@@ -70,7 +70,7 @@ for iter = 1 : maxiter
     rmse = sqrt(mean_squared_difference);
     
     % Step 4: Store rmse
-    loss{iter} = rmse;
+    loss(iter) = rmse;
         
 end
 % After the iterations, take the last updated UV and return their dot

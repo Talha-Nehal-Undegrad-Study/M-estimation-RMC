@@ -29,14 +29,14 @@ Noise = zeros(size(X_Omega));
 Noise(omega) = noise;
 
 X_Omega = X_Omega + Noise;
-maxiter = 50;
+maxiter = 1000;
 
 % Pass corrputed matrix X_Omega, the sampling matrix, array_Omega and rank
 % and maxiter
 % r
 [X_recovered, loss_recovered] = rmc_huber(X_Omega, array_Omega, rank, maxiter);
 
-disp(loss_recovered)
+fprintf('\nMinimum MSE Loss with Huber M Estimation: %d', min(loss_recovered))
 
 figure
 semilogy(loss_recovered,'r','LineWidth',1.2);
