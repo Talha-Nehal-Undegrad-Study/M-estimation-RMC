@@ -1,4 +1,4 @@
-function [counts] = get_num_outliers_cols(c, indices, col)
+function [counts] = get_num_outliers_cols(X, c, indices, col)
 counts = 0;
 % Iterate through each column's indices and columns
 % for j = 1:dim

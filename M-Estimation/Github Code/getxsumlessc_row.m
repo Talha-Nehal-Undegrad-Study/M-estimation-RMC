@@ -6,7 +6,7 @@ indices = indices{row};  % Get the indices for the j-th column
 for j = indices
     % Find the values in the X matrix for the i-th index and j-th column
     value = X_Omega(row, j);
-    if sum <= c
+    if value <= c
         sum = sum + value;
     end
 end
