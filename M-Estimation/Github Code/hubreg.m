@@ -1,95 +1,147 @@
-function [Out_X, loss] = hubreg(X_Omega, array_Omega, rank, maxiter)
+function [b1, sig1, iter,mu] = hubreg(y,X,c,sig0,b0,printitn)
+% [b1, sig1, iter] = hubreg(y,X,...)
+% hubreg computes the joint M-estimates of regression and scale using 
+% Huber's criterion. 
+%
+% INPUT: 
+%
+%        y: Numeric data vector of size N x 1 (output, respones)
+%        X: Numeric data matrix of size N x p. Each row represents one 
+%           observation, and each column represents one predictor (feature). 
+%           If the model has an intercept, then first column needs to be a  
+%           vector of ones. 
+%         c: numeric threshold constant of Huber's function
+%      sig0: (numeric) initial estimator of scale [default: SQRT(1/(n-p)*RSS)]
+%        b0: initial estimator of regression (default: LSE)  
+%  printitn: print iteration number (default = 0, no printing)
+%
+% OUTPUT:
+%
+%       b1: the regression coefficient vector estimate 
+%     sig1: the estimate of scale 
+%     iter: the # of iterations 
+%
+% version: Sep 2, 2018
+% authors: Esa Ollila 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%
-% Implementing the Algorithm here
+[N, p] = size(X);
+wfun =  @(x,c) ( 1.*(x<=c) + (c*(1./x)).*(x>c) );
 
-%% 
-% Intialize U_1 of dimensions n1 x r and V_1 of dimensions rank x n2
-[n1, n2] = size(X_Omega);
-U_1 = rand(n1, rank);
-V_1 = zeros(rank, n2);
-c = 1.345; % for huber
-% Intialize a dummy cell array for u and v of size maxiter and each will
-% contain updated u and v after each iteration. First index will therefore
-% contain the initilizations above
-
-u_cell = cell(1, maxiter);
-u_cell{1} = U_1;
-
-v_cell = cell(1, maxiter);
-v_cell{1} = V_1;
-
-sigma_cell = cell(1, maxiter);
-% Apped random guess initially
-sigma_cell{1} = rand(1);
-
-% For storing loss
-loss = zeros(1, maxiter);
-
-% Determine the set of indices where each column of the matrix array_Omega
-% is 1 and store it in a cell array where element at index i will correspond
-% to an array of indices where the column i of array_Omega is 1. Do the
-% same for each row.
-
-[indices_col, indices_row] = get_row_col_indices(array_Omega);
-
-% Computing alpha according to Eq (8) of MM Paper i.e. cdf of Chisq
-% distribution
-% Calculate the CDF
-alpha = (c^2/2) * (1 - chi2cdf(c^2, 1)) + (1/2) * chi2cdf(c^2, 3);
-
-% fprintf('Alpha Chosen %d', alpha);
-
-% Computer psuedoinverse of observed matrix
-X_psuedo = get_inverse(X_Omega);
-
-for iter = 1 : maxiter
-    % Update V while fixing U column wise
-    v_upd = v_cell{iter};
-    for j = 1 : n2
-        % Get residual and tau (from Eq (18))
-        residual = get_residual()
-        num_col_outliers = get_num_outliers_cols(X_Omega, c, indices_col, j);
-        % Get sum < c for X_Omega
-        sumlessc_col = getxsumlessc_col(X_Omega, indices_col, j, c);
-        % Get sum of I_j U transpose rows
-        u_sum = utransposesum(u_cell{iter}, indices_col, j);
-        val = (num_col_outliers + sumlessc_col) ./ u_sum;
-        v_upd(:, j) = (num_col_outliers + sumlessc_col) ./ u_sum;
-    end
-    % Store updated v
-    v_cell{iter + 1} = v_upd;
-    
-    % Update U while fixing Vk+1 row wise
-
-    u_upd = zeros(n1, rank);
-    for i = 1 : n1
-        % Get num outlier 
-        num_row_outliers = get_num_outliers_row(X_Omega, c, indices_row, i);
-        % Get sum < c for X_Omega
-        sumlessc_row = getxsumlessc_row(X_Omega, indices_row, i, c);
-        % Get sum of I_j U transpose rows
-        v_sum = vsum(v_cell{iter + 1}, indices_row, i);
-        u_upd(i, :) = ((num_row_outliers + sumlessc_row) ./ v_sum)';
-    end
-    % Store updated u
-    u_cell{iter + 1} = u_upd;
-
-    % After one iteration and one update of U and V compute UV and check
-    % RMSE with original
-    squared_differences = (u_cell{iter + 1} * v_cell{iter + 1} - X_Omega).^2;
-
-    % Step 2: Calculate the mean of squared differences
-    mean_squared_difference = mean(squared_differences(:));
-    
-    % Step 3: Take the square root to obtain RMSE
-    rmse = sqrt(mean_squared_difference);
-    
-    % Step 4: Store rmse
-    loss(iter) = rmse;
-        
+if nargin < 6 
+    printitn = 1;
 end
-% After the iterations, take the last updated UV and return their dot
-% product as the final prediction
-Out_X = u_cell{end} * v_cell{end};
+
+if nargin < 3 || isempty(c)
+   c = 1.3415;  % Default: approx 95 efficiency for Gaussian errors
 end
+
+if nargin < 5 || isempty(b0)
+    b0 = X \ y; %  initial start is the LSE    
+end
+
+if nargin < 4 || isempty(sig0)
+    sig0 =  norm(y-X*b0)/sqrt(N-p); % initial estimate of scale    
+end
+
+csq = c^2; 
+al = (1/2)*chi2cdf(csq,3)+ (csq/2)*(1-chi2cdf(csq,1)); % consistency factor for scale 
+  
+ITERMAX = 300;
+ERRORTOL1 = 1.0e-3; % ERROR TOLERANCE FOR SCALE (joint)
+ERRORTOL2 = 1.0e-3; % ERROR TOLERANCE FOR REGRESSION (joint)
+ERRORTOL3 = 5.0e-4; % ERROR TOLERANCE FOR REGRESSION
+
+Xplus = pinv(X);
+con  = sqrt((N-p)*2*al);
+mu = 1;
+objold = 1e12; % a big number
+crit1 = 1e12;
+crit2 = 1e12;
+mu0  = 0;
+lam0 = 0;
+
+for iter=1:ITERMAX
+   
+    % STEP 1: update residual  $r^{(n)}$
+    r = y - X*b0;
+    
+    % STEP 2: update $\tau$
+    tau = (norm(psihub(r/sig0,c))/con);
+    
+    % STEP 3: update step size for scale 
+    % update only when crit 1 > 0.001
+    if crit1 > 0.001 
+        lam_num = norm(psihub(r/(sig0*(tau^lam0)),c))/con;
+        lam = lam0 + log(lam_num)/log(tau);  
+        lam = max(0.01,min(lam,1.99));
+    else
+        lam = lam0;
+    end
+
+    % STEP 4: update the scale 
+    update1 = tau^lam;
+    sig1 = sig0*update1;
+   
+    % STEP 5: Update $\delta$  
+    psires = psihub(r/sig1,c)*sig1;  
+    delta = Xplus*psires;
+
+    % STEP 6: update the step size of regression
+    % update only when crit 1 > 0.001
+    if crit2 > 0.001 
+        z = X*delta;
+        tilde_r = r - mu0*z;
+        w  = wfun(abs(tilde_r)/sig1,c);        % weights
+        w(tilde_r==0) = 0.000001;
+        mu2 = sum((z.^2).*w);
+        mu1 = sum((z.*w).*r);
+        mu =  max(0.01,min(mu1/mu2,1.99));
+    else
+        mu = mu0;
+    end
+
+    update2  = mu*delta;
+    
+    % STEP 7: update the regression vector:
+    b1 = b0 + update2; 
+
+    % STEP 8: check for convergence:    
+    crit2 = norm(update2)/norm(b0);
+    crit1 = abs(update1 - 1);
+     
+    if mod(iter,printitn)==0
+
+      tmp1 = (y-X*b1)/sig1;
+      tmp2 = psihub(tmp1,c)*sig1;     
+      esteq_beta  = X'*tmp2/N;
+      esteq_sigma =  sum(psihub(tmp1,c).^2)/(N-p) -2*al;
+
+      objnew = sig1*sum(rhohub((y-X*b1)/sig1,c))/(N-p) + al*sig1;
+      fprintf('%2d %.3f|%.3f\t %.9f %.9f %11.7f  %10.5f  %10.5f\n',iter,mu,lam,crit2,crit1,objnew,norm(esteq_beta),abs(esteq_sigma));
+      if objnew > objold 
+           fprintf('increasing objective fnc'); 
+      end
+    end
+   
+   
+   if (crit2 < ERRORTOL1  && crit1 < ERRORTOL2) || crit2 < ERRORTOL3
+      break 
+   end   
+   
+   b0 = b1; 
+   sig0 = sig1; 
+   mu0 = mu;
+   lam0 = lam;
+
+end
+
+if mod(iter,printitn)==0
+    fprintf('\n Done! \n');
+end 
+
+if iter == ITERMAX
+    fprintf('error!!! MAXiter = %d crit1 = %.7f crit2 = %.7f\n',iter,crit1,crit2);
+end
+
+
