@@ -1,4 +1,5 @@
-function [Out_X, loss] = rmc_huber(X_Omega, array_Omega, rank, maxiter)
+function [Out_X, loss] = hubreg(X_Omega, array_Omega, rank, maxiter)
+
 %%
 % Implementing the Algorithm here
 
@@ -18,8 +19,12 @@ u_cell{1} = U_1;
 v_cell = cell(1, maxiter);
 v_cell{1} = V_1;
 
+sigma_cell = cell(1, maxiter);
+% Apped random guess initially
+sigma_cell{1} = rand(1);
+
 % For storing loss
-loss = cell(1, maxiter);
+loss = zeros(1, maxiter);
 
 % Determine the set of indices where each column of the matrix array_Omega
 % is 1 and store it in a cell array where element at index i will correspond
@@ -28,18 +33,28 @@ loss = cell(1, maxiter);
 
 [indices_col, indices_row] = get_row_col_indices(array_Omega);
 
+% Computing alpha according to Eq (8) of MM Paper i.e. cdf of Chisq
+% distribution
+% Calculate the CDF
+alpha = (c^2/2) * (1 - chi2cdf(c^2, 1)) + (1/2) * chi2cdf(c^2, 3);
+
+% fprintf('Alpha Chosen %d', alpha);
+
+% Computer psuedoinverse of observed matrix
+X_psuedo = get_inverse(X_Omega);
+
 for iter = 1 : maxiter
     % Update V while fixing U column wise
     v_upd = v_cell{iter};
     for j = 1 : n2
-        % Get num outlier 
+        % Get residual and tau (from Eq (18))
+        residual = get_residual()
         num_col_outliers = get_num_outliers_cols(X_Omega, c, indices_col, j);
         % Get sum < c for X_Omega
         sumlessc_col = getxsumlessc_col(X_Omega, indices_col, j, c);
         % Get sum of I_j U transpose rows
         u_sum = utransposesum(u_cell{iter}, indices_col, j);
         val = (num_col_outliers + sumlessc_col) ./ u_sum;
-        disp(size(val))
         v_upd(:, j) = (num_col_outliers + sumlessc_col) ./ u_sum;
     end
     % Store updated v
@@ -71,12 +86,10 @@ for iter = 1 : maxiter
     rmse = sqrt(mean_squared_difference);
     
     % Step 4: Store rmse
-    loss{iter} = rmse;
+    loss(iter) = rmse;
         
 end
 % After the iterations, take the last updated UV and return their dot
 % product as the final prediction
 Out_X = u_cell{end} * v_cell{end};
 end
-
-
