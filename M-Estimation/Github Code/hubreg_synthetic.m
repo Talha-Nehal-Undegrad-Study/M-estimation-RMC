@@ -29,15 +29,15 @@ Noise = zeros(size(X_Omega));
 Noise(omega) = noise;
 
 X_Omega = X_Omega + Noise;
-maxiter = 1000;
+maxiter = 100;
 
 % Pass corrputed matrix X_Omega, the sampling matrix, array_Omega and rank
 % and maxiter
 % r
-[X_recovered, loss_recovered] = huber_reg(X_Omega, array_Omega, rank, maxiter);
+[X_recovered, loss_recovered] = hubreg_repli(X_Omega, array_Omega, rank, maxiter);
 
-fprintf('\nMinimum MSE Loss with Huber M Estimation: %d', min(loss_recovered))
-
+fprintf('\nMinimum MSE Loss with Huber M Estimation: %d\n', min(loss_recovered))
+disp(loss_recovered)
 figure
 semilogy(loss_recovered,'r','LineWidth',1.2);
 % hold on
@@ -46,7 +46,7 @@ semilogy(loss_recovered,'r','LineWidth',1.2);
 xlabel('Iteration number');
 ylabel('RMSE');
 legend('Huber Estimation RMC','Interpreter','LaTex');
-figure_setting(1.5, 15, 600, 500)
+% figure_setting(1.5, 15, 600, 500)
 
 
 

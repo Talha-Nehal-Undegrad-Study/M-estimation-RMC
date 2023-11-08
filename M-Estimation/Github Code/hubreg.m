@@ -118,9 +118,9 @@ for iter=1:ITERMAX
       esteq_sigma =  sum(psihub(tmp1,c).^2)/(N-p) -2*al;
 
       objnew = sig1*sum(rhohub((y-X*b1)/sig1,c))/(N-p) + al*sig1;
-      fprintf('%2d %.3f|%.3f\t %.9f %.9f %11.7f  %10.5f  %10.5f\n',iter,mu,lam,crit2,crit1,objnew,norm(esteq_beta),abs(esteq_sigma));
+      % fprintf('%2d %.3f|%.3f\t %.9f %.9f %11.7f  %10.5f  %10.5f\n',iter,mu,lam,crit2,crit1,objnew,norm(esteq_beta),abs(esteq_sigma));
       if objnew > objold 
-           fprintf('increasing objective fnc'); 
+           % fprintf('increasing objective fnc'); 
       end
     end
    
@@ -137,11 +137,11 @@ for iter=1:ITERMAX
 end
 
 if mod(iter,printitn)==0
-    fprintf('\n Done! \n');
+    % fprintf('\n Done! \n');
 end 
 
 if iter == ITERMAX
-    fprintf('error!!! MAXiter = %d crit1 = %.7f crit2 = %.7f\n',iter,crit1,crit2);
+    % fprintf('error!!! MAXiter = %d crit1 = %.7f crit2 = %.7f\n',iter,crit1,crit2);
 end
 
 

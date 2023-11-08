@@ -37,7 +37,7 @@ for i = 1:maxiter
     
     u_upd = u_cell{i};
     for z = 1:n1
-       [ui_upd, scale_kupd, iter, ~] = hubreg(getxi(X_Omega, indices_row, z), get_v(v_cell{i + 1}, indices_row, z), c, sigma_for_u{z}, u_upd(z, :), n1);
+       [ui_upd, scale_kupd, iter, ~] = hubreg(getxi(X_Omega, indices_row, z), (get_v(v_cell{i + 1}, indices_row, z))', c, sigma_for_u{z}, (u_upd(z, :))', n1);
         u_upd(z, :) = ui_upd;
         sigma_cell_for_v{z + 1} = scale_kupd;
     end
@@ -54,6 +54,7 @@ for i = 1:maxiter
     
     % Step 4: Store rmse
     loss(i) = rmse;
+    fprintf("Loss at iteration %d: %f\n", i, rmse)
 end
 % After the iterations, take the last updated UV and return their dot
 % product as the final prediction
