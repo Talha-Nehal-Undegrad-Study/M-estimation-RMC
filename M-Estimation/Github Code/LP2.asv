@@ -1,4 +1,4 @@
-function [Out_X] = LP2(M_Omega,Omega,rak, maxiter)
+function [Out_X] = LP2(M_Omega,Omega,rak,maxiter)
 % This matlab code implements the l1-reg 
 % method for Matrix Completion.
 %
@@ -48,11 +48,11 @@ while 1
         col_i_new = find(Omega(1, :) == i);
         [~, col_n] = size(col_i_new);
         for n = 1:col_n
-            col(1, n) = Omega(2, col_i_new(1, n));
+            col (1,n) = Omega(2, col_i_new(1, n));
         end
-        for j = 1: length(col)
-            V_I(:,j) = V(:, col(1, j));
-            b_I(j) = M_Omega(i,col(1, j));
+        for j =1:length(col)
+            V_I(:,j) = V(:,col(1,j));
+            b_I(j) = M_Omega(i,col(1,j));
         end
         U(i,:) = b_I * pinv(V_I);
         clear V_I b_I;
@@ -60,8 +60,8 @@ while 1
     %**************
     %Judging
     %**************
-    X = U * V;
-    if (iter > maxiter)
+    X = U*V;
+    if (iter>maxiter)
         break;
     end
     

@@ -1,0 +1,12 @@
+% Script for running lp_reg (p = 1 and 2) for a specified interval of observation ratio and db noise. Results from each
+% will be used to calculate the normalized MSE loss defined as the
+% forbenius norm squared of the reconstructed matrix - original matrix
+% divided by the dimensions of the original matrix (denoted as Loss_normalized). In the end plot loss
+% averaged over 10 independant trials for both l1 and l2 regression.
+
+db = [-9, -6, -3, 0, 3, 6, 9];
+observation_ratio = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
+
+% Loop over db and observation ratio --> generate M, M_Omega, Array_Omega
+% --> Run L1 and L2 regression --> compute Loss_normalized and store result
+% --> repeat L1 and L2 regression for 10 trials --
