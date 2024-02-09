@@ -46,16 +46,16 @@ end
 
 % Plotting
 % For a comprehensive plot, we might plot each observation ratio as a separate line
-figure;
-hold on;
-colors = jet(length(observation_ratio)); % Color scheme for different observation ratios
-for j = 1:length(observation_ratio)
-    plot(db, loss_normalized_L1(:, j), 'o-', 'Color', colors(j,:), 'DisplayName', ['L1, Ratio ' num2str(observation_ratio(j))]);
-    plot(db, loss_normalized_L2(:, j), 'x--', 'Color', colors(j,:), 'DisplayName', ['L2, Ratio ' num2str(observation_ratio(j))]);
-end
-legend('show');
-xlabel('dB Level');
-ylabel('Average Normalized MSE Loss');
-title('L1 vs. L2 Regression Loss');
-grid on;
-hold off;
+% figure;
+% hold on;
+% colors = jet(length(observation_ratio)); % Color scheme for different observation ratios
+% for j = 1:length(observation_ratio)
+%     plot(db, loss_normalized_L1(:, j), 'o-', 'Color', colors(j,:), 'DisplayName', ['L1, Ratio ' num2str(observation_ratio(j))]);
+%     plot(db, loss_normalized_L2(:, j), 'x--', 'Color', colors(j,:), 'DisplayName', ['L2, Ratio ' num2str(observation_ratio(j))]);
+% end
+% legend('show');
+% xlabel('dB Level');
+% ylabel('Average Normalized MSE Loss');
+% title('L1 vs. L2 Regression Loss');
+% grid on;
+% hold off;
