@@ -1,11 +1,13 @@
 % Initialization
-db = [-9, -6, -3, 0, 3, 6, 9];
+
+db = [-9, -6, -3];
 observation_ratio = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
+
 r = 150;
 c = 300;
 rank = 10;
-maxiter = 100;
-num_trials = 2;
+maxiter = 500;
+num_trials = 100;
 
 % Preallocate arrays to hold the averaged normalized loss
 loss_normalized_L1 = zeros(length(db), length(observation_ratio));
@@ -36,6 +38,9 @@ for i = 1:length(db)
         % Average the loss over trials
         loss_normalized_L1(i, j) = mean(loss_L1);
         loss_normalized_L2(i, j) = mean(loss_L2);
+        fprintf('Average Normalized Loss with L1 regression with DB = %f, Observation Ratio = %f is %f\n', db(i), observation_ratio(j), loss_normalized_L1(i, j));
+        fprintf('Average Normalized Loss with L2 regression with DB = %f, Observation Ratio = %f is %f\n', db(i), observation_ratio(j), loss_normalized_L2(i, j));
+
     end
 end
 
