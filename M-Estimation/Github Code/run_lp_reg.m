@@ -6,8 +6,8 @@ observation_ratio = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
 r = 150;
 c = 300;
 rank = 10;
-maxiter = 500;
-num_trials = 2;
+maxiter = 1000;
+num_trials = 1;
 
 % Preallocate arrays to hold the averaged normalized loss
 loss_normalized_L1 = zeros(length(db), length(observation_ratio));
@@ -27,7 +27,7 @@ for i = 1:length(db)
             % Run L1 regression
             Out_X_L1 = LP1(M_Omega, array_Omega, rank, maxiter);
 
-            Compute normalized MSE loss for L1
+            % Compute normalized MSE loss for L1
             loss_L1(trial) = norm(Out_X_L1 - M, 'fro')^2 / (r*c);
             
             % Run L2 regression

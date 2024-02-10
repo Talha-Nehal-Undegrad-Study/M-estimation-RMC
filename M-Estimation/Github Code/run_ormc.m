@@ -1,6 +1,6 @@
 % Initialization
 
-db = [3, 5, 6, 9];
+db = [3, 5, 6, 9]; % DB values cant be negative for some reason - loss was in millions!
 observation_ratio = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
 
 r = 150;
@@ -34,7 +34,7 @@ for i = 1:length(db)
         fprintf('Average Normalized Loss with ORMC regression with DB = %f, Observation Ratio = %f is %f\n', db(i), observation_ratio(j), loss_normalized_ORMC(i, j));
         
         % NOTE: for each value of SNR, loss values initially decrease with
-        % increasing obs. ratio, but then start to increase. this is
+        % increasing obs. ratio, but then start to increase. This is
         % intriguing.
     end
 end
