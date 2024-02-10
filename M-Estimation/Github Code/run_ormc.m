@@ -26,7 +26,7 @@ for i = 1:length(db)
             Out_X_ORMC = (ORMC(M_Omega, array_Omega, rank, maxiter)).matrix;
 
             % Compute normalized MSE loss for L2
-            loss_ORMC(trial) = norm(Out_X_L2 - M, 'fro')^2 / (r*c);
+            loss_ORMC(trial) = norm(Out_X_ORMC - M, 'fro')^2 / (r*c);
         end
         
         % Average the loss over trials
@@ -42,7 +42,7 @@ figure;
 hold on;
 colors = jet(length(observation_ratio)); % Color scheme for different observation ratios
 for j = 1:length(observation_ratio)
-    plot(db, loss_normalized_ORMC(:, j), 'x--', 'Color', colors(j,:), 'DisplayName', ['L2, Ratio ' num2str(observation_ratio(j))]);
+    plot(db, loss_normalized_ORMC(:, j), 'x--', 'Color', colors(j,:), 'DisplayName', ['ORMC, Ratio ' num2str(observation_ratio(j))]);
 end
 legend('show');
 xlabel('dB Level');
