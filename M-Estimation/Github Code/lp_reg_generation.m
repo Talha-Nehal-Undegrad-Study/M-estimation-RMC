@@ -11,9 +11,9 @@ Noise = zeros(size(M_Omega));
 Noise(omega) = sampling_rate;
 M_Omega = M_Omega + Noise;
 %% Generate Omega in the format discussed
-linear_indices = find(M_Omega);
+% linear_indices = find(M_Omega);
 
-[row_indices, col_indices] = ind2sub(size(M_Omega), linear_indices);
+% [row_indices, col_indices] = ind2sub(size(M_Omega), linear_indices);
 
 % Combine row and column indices into the Omega format
-array_Omega = [row_indices'; col_indices'];
+% array_Omega = [row_indices'; col_indices'];
