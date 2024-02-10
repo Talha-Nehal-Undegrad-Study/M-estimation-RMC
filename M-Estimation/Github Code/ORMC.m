@@ -1,7 +1,7 @@
 % ORMC  % 2017-10-19
 % object function min ||X-UV-b1^T||2,1  S.T. U'U = i
 
-function out = ORMC(X,N,r,NITER)
+function out = ORMC(X,N,r,NITER) % M_Omega, array_Omega, rank, maxiter
 
 %% Input: 
 %   X: data matrix

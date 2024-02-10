@@ -6,7 +6,7 @@ observation_ratio = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
 r = 150;
 c = 300;
 rank = 10;
-maxiter = 500;
+maxiter = 1000;
 num_trials = 1;
 
 % Preallocate arrays to hold the averaged normalized loss
