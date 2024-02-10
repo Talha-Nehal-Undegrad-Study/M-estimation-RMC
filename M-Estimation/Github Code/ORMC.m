@@ -67,4 +67,5 @@ out.re = re;
 [~,index] = sort(Bi);
 out.index = index;
 out.weight = d;
+out = out.matrix;
 

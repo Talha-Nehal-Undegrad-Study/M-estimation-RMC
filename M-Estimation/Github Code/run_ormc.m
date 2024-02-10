@@ -1,12 +1,12 @@
 % Initialization
 
-db = [-9, -6, -3];
+db = [3, 5, 6, 9];
 observation_ratio = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
 
 r = 150;
 c = 300;
 rank = 10;
-maxiter = 1000;
+maxiter = 500;
 num_trials = 1;
 
 % Preallocate arrays to hold the averaged normalized loss
@@ -23,7 +23,7 @@ for i = 1:length(db)
             [M, M_Omega, array_Omega] = lp_reg_generation(r, c, rank, db(i), observation_ratio(j));
             
             % Run ORMC regression
-            Out_X_ORMC = (ORMC(M_Omega, array_Omega, rank, maxiter)).matrix;
+            Out_X_ORMC = (ORMC(M_Omega, array_Omega, rank, maxiter));
 
             % Compute normalized MSE loss for L2
             loss_ORMC(trial) = norm(Out_X_ORMC - M, 'fro')^2 / (r*c);
@@ -32,7 +32,10 @@ for i = 1:length(db)
         % Average the loss over trials
         loss_normalized_ORMC(i, j) = mean(loss_ORMC);
         fprintf('Average Normalized Loss with ORMC regression with DB = %f, Observation Ratio = %f is %f\n', db(i), observation_ratio(j), loss_normalized_ORMC(i, j));
-
+        
+        % NOTE: for each value of SNR, loss values initially decrease with
+        % increasing obs. ratio, but then start to increase. this is
+        % intriguing.
     end
 end
 
