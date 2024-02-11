@@ -22,7 +22,7 @@ for i = 1:length(db)
             % Generate the matrices
             [M, M_Omega, array_Omega] = algo_synthetic_generation(r, c, rank, db(i), observation_ratio(j), 'lpadmm');
             
-            % Run ORMC regression
+            % Run Lp (p = 1) ADMM regression
             Out_X_ADMM = (lpadmm(M_Omega, array_Omega, rank, 10^-5, 100));
 
             % Compute normalized MSE loss for L2
