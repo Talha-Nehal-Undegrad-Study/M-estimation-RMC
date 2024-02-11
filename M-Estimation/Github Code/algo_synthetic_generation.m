@@ -13,7 +13,7 @@ M_Omega = M_Omega + Noise;
 %% Generate Omega in the format discussed if lp_reg or lp_admm algorithm is used
 switch algo
     case 'lpreg'
-        array_Omega = getNonZeroIndices(M_Omega);
+        array_Omega = findNonZeroIndices(M_Omega);
     case 'lpadmm'
-        array_Omega = getNonZeroIndices(M_Omega);
+        array_Omega = findNonZeroIndices(M_Omega);
 end
