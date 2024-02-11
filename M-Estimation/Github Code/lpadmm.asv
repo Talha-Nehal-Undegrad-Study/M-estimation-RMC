@@ -1,5 +1,5 @@
-function [Out_X, U, V] = LP2(M_Omega,Omega,rak, maxiter)
-% This matlab code implements the l1-reg 
+function [Out_X] = lpadmm(M_Omega,Omega, rank, tolerance)
+% This matlab code implements the lp - ADMM 
 % method for Matrix Completion.
 %
 % M - m x n matrix of observations/data (required input)
@@ -9,9 +9,31 @@ function [Out_X, U, V] = LP2(M_Omega,Omega,rak, maxiter)
 % maxIter - maximum number of iterations
 %         - DEFAULT 500, if omitted or -1.
 
-iter = 0;
+% Initialization
 [n1, n2] = size(M_Omega);
-U = randn(n1,rak);
+[~, card_omega] = size(Omega); % card_omega denotes the cardinality of the Omega aka the number of nonzero entries
+e = zeros(card_omega);         % Denotes the observed entries of the expression (UV)_omega - X_omega therefore its of shape card_omega
+lambda = zeros(card_omega);    % Denotes the lagrange multiplies or dual variables of only the nonzero entries therefore of shape card_omega
+
+E_omega = zeros(n1, n2);       % Since e for now is zeros, E_omega is also zeros
+Lambda_omega = zeros(n1, n2)   % Since lambda for now is zeros, Lambda_omega is also zeros
+
+mu = 5;                        % penalty parameter taken to be the same value as in the paper
+
+
+while true % When tolerance level is achieved we stop.
+    % Solve LS factorization X as (E_omega -  Lambda_omega / mu + X_omega)
+    [~, U, V] = LP2((E_Omega - (Lambda_omega ./ mu) + M_Omega), Omega, rank);
+
+    % Compute Y_omega as (T)_omega + Lambda_Omega / mu - X_Omega where 
+    T_omega = (U * V)
+    Y_omega = (U * V) + (Lambda_omega ./ mu) - M_Omega
+
+    % Form y_omega and t_omega as the nonzero elements of their big letter
+    % counterparts
+end
+
+
 while 1
     iter = iter + 1;
     clear row col V;
@@ -61,7 +83,7 @@ while 1
     %Judging
     %**************
     X = U * V;
-    if (iter > maxiter)
+    if (iter > tolerance)
         break;
     end
     

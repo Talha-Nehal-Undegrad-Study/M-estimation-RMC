@@ -10,13 +10,10 @@ sampling_rate = Gaussian_noise(M_Omega(omega), 'GM', db);
 Noise = zeros(size(M_Omega));
 Noise(omega) = sampling_rate;
 M_Omega = M_Omega + Noise;
-%% Generate Omega in the format discussed if lp_reg algorithm is used
+%% Generate Omega in the format discussed if lp_reg or lp_admm algorithm is used
 switch algo
     case 'lpreg'
-        linear_indices = find(M_Omega);
-        
-        [row_indices, col_indices] = ind2sub(size(M_Omega), linear_indices);
-        
-        % Combine row and column indices into the Omega format
-        array_Omega = [row_indices'; col_indices'];
+        array_Omega = getNonZeroIndices(M_Omega);
+    case 'lpadmm'
+        array_Omega = getNonZeroIndices(M_Omega);
 end
