@@ -1,4 +1,4 @@
-function [Out_X] = lpadmm(M_Omega,Omega, rank, tolerance)
+function [Out_X] = lpadmm(M_Omega,Omega, rank, tolerance, maxiter)
 % This matlab code implements the lp - ADMM 
 % method for Matrix Completion.
 %
@@ -20,10 +20,12 @@ Lambda_omega = zeros(n1, n2);   % Since lambda for now is zeros, Lambda_omega is
 
 mu = 5;                        % penalty parameter taken to be the same value as in the paper
 
-
+iter = 0;
+lp2_maxiter = 10;
 while true % When tolerance level is achieved we stop.
+    iter = iter + 1;
     % Solve LS factorization X as (E_omega -  Lambda_omega / mu + X_omega)
-    [~, U, V] = LP2(((maskMatrix(E_omega, Omega)) - (maskMatrix(Lambda_omega, Omega) ./ mu) + M_Omega), Omega, rank, 10);
+    [~, U, V] = LP2(((maskMatrix(E_omega, Omega)) - (maskMatrix(Lambda_omega, Omega) ./ mu) + M_Omega), Omega, rank, lp2_maxiter);
 
     % Compute Y_omega as (T)_omega + Lambda_Omega / mu - X_Omega where
     % T_Omega = (U * V)_omega
@@ -55,6 +57,8 @@ while true % When tolerance level is achieved we stop.
     
     X = U * V;
     if norm(t_omega - e - getNonZeroElements(M_Omega, Omega), 2) <= tolerance
+        break;
+    elseif iter >= maxiter
         break;
     end
 
