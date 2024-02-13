@@ -1,4 +1,4 @@
-function [b1, sig1, iter] = hubreg(y,X,c,sig0,b0,printitn)
+function [b1, sig1, iter] = real_hubreg(y,X,c,sig0,b0,printitn)
 % [b1, sig1, iter] = hubreg(y,X,...)
 % hubreg computes the joint M-estimates of regression and scale using 
 % Huber's criterion. Function worsk for both real- and complex-valued data.
