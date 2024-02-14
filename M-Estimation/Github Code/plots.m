@@ -1,6 +1,7 @@
 clc; clear; close all;
 
-mat_files = {'lp_admm_loss_results.mat', 'lp_loss_results.mat', 'ormc_loss_results.mat'};
+mat_files = {'ormc_loss_results.mat', 'lp_admm_loss_results.mat', 'lp_loss_results.mat', 'l0_bcd_loss_results'};
+lgd = {'ORMC', '$\ell_p$-ADMM', '$\ell_p$-reg', '$\ell_0$-BCD'};
 num_files = numel(mat_files);
 matrices  = cell(num_files, 1);
 
@@ -25,7 +26,7 @@ for i = 1:length(obs)
     ylabel('MSE');
     xticklabels(snr);
     yscale log;
-    legend('$\ell_p$-ADMM', '$\ell_p$-reg', 'ORMC', 'Interpreter','LaTex');
+    legend(lgd, 'Interpreter', 'LaTex');
 end
 
 for i = 1:length(snr)
@@ -42,5 +43,5 @@ for i = 1:length(snr)
     ylabel('MSE');
     xticklabels(obs);
     yscale log;
-    legend('$\ell_p$-ADMM', '$\ell_p$-reg', 'ORMC', 'Interpreter','LaTex');
+    legend(lgd, 'Interpreter', 'LaTex');
 end

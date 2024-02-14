@@ -53,12 +53,7 @@ for iter = 1 : maxiter
     outliers_posi = Omega(posi);
     outliers = abs(Y_Omega(outliers_posi));
     temp_thres = thres;
-    try
-        thres = min(min(outliers(:))^2,temp_thres);
-    catch ME
-        disp(['Error occurred: ', ME.message]);
-        disp(min(outliers(:)));
-    end
+    thres = min(min(outliers(:))^2,temp_thres);
     s = reshape(Y_Omega(Omega),[],1).* (reshape(abs(Y_Omega(Omega)),[],1) >= sqrt(thres));
     S = zeros(size(Y_Omega));
     S(Omega) = s;

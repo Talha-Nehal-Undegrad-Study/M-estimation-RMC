@@ -1,55 +1,60 @@
-% Initialization
+%%
+% If you use this code, please cite the following paper in your corresponding work. Thanks!
+% X. P. Li, Z.-L. Shi, Q. Liu and H. C. So, "Fast robust matrix completion
+% via ?0-norm minimization" IEEE Transactions on Cybernetics, 2022.
 
-db = [3, 5, 6, 9]; % DB values cant be negative for some reason - loss was in millions!
-observation_ratio = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
+%%
+clear variables
+close all hidden
+[r, c, rak] = deal(400,500,10);
+M = randn(400, 10)* randn(10,500);
 
-r = 150;
-c = 300;
-rank = 10;
-maxiter = 500;
-num_trials = 1;
+% per = 0.5;  % Obervation ratio
+% dB =3;      % SNR
 
-% Preallocate arrays to hold the averaged normalized loss
-loss_normalized_L0BCD = zeros(length(db), length(observation_ratio));
+dB = [3, 5, 6, 9];
+per = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
 
-% Main loops
-for i = 1:length(db)
-    for j = 1:length(observation_ratio)
-        % loss_L1 = zeros(1, num_trials);
-        loss_L0BCD = zeros(1, num_trials);
+%%
+
+matrix = zeros(length(dB), length(per));
+
+for p = 1:length(per)
+    for d = 1:length(dB)
+        array_Omega = binornd( 1, per(p), [ r, c ] );
+        M_Omega = M.*array_Omega;
+        omega = find(array_Omega(:)==1);
+        noise = Gaussian_noise(M_Omega(omega),'GM',dB(d));
+        Noise = zeros(size(M_Omega));
+        Noise(omega) = noise;
+        M_Omega = M_Omega + Noise;
+        maxiter = 50;
         
-        for trial = 1:num_trials
-            % Generate the matrices
-            [M, M_Omega, array_Omega] = algo_synthetic_generation(r, c, rank, db(i), observation_ratio(j), '');
-            
-            % Run ORMC regression
-            Out_X_L0BCD = (L0_BCD(M, M_Omega, array_Omega, rank, maxiter));
-
-            % Compute normalized MSE loss for L2
-            loss_L0BCD(trial) = norm(Out_X_L0BCD - M, 'fro')^2 / (r*c);
-        end
-        
-        % Average the loss over trials
-        loss_normalized_L0BCD(i, j) = mean(loss_L0BCD);
-        fprintf('Average Normalized Loss with L0_BCD regression with DB = %f, Observation Ratio = %f is %f\n', db(i), observation_ratio(j), loss_normalized_L0BCD(i, j));
-        
-        % NOTE: for each value of SNR, loss values initially decrease with
-        % increasing obs. ratio, but then start to increase. This is
-        % intriguing.
+        [X, MSE, loss] = L0_BCD(M,M_Omega,array_Omega,rak, maxiter);
+        matrix(d, p) = min(MSE);
     end
 end
+
+%%
+
+% figure
+% semilogy(MSE,'k--','LineWidth',1.2);
+% 
+% xlabel('Iteration number');
+% ylabel('MSE');
+% legend('$\ell_0$-BCD','Interpreter','LaTex');
 
 % Plotting
 % For a comprehensive plot, we might plot each observation ratio as a separate line
 figure;
 hold on;
-colors = jet(length(observation_ratio)); % Color scheme for different observation ratios
-for j = 1:length(observation_ratio)
-    plot(db, loss_normalized_L0BCD(:, j), 'x--', 'Color', colors(j,:), 'DisplayName', ['L0-BCD, Ratio ' num2str(observation_ratio(j))]);
+colors = jet(length(per)); % Color scheme for different observation ratios
+for j = 1:length(per)
+    plot(dB, matrix(:, j), 'x--', 'Color', colors(j,:), 'DisplayName', ['L_0-BCD, Ratio ' num2str(per(j))]);
 end
 legend('show');
 xlabel('dB Level');
 ylabel('Average Normalized MSE Loss');
-title('L0-BCD Regression Loss');
+title('L_0-BCD Regression Loss');
 grid on;
 hold off;
