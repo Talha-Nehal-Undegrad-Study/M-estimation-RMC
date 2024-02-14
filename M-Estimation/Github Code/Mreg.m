@@ -27,9 +27,7 @@ if nargin < 5
 end
 
 if nargin < 4 || isempty(b0)
-    fprintf("Hello");
     b0 = ladreg(y,X,false); 
-    fprintf("HEE");
 end
 
 % Compute the auxiliary scale estimate as 
