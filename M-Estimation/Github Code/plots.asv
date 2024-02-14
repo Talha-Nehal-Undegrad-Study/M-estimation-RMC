@@ -1,0 +1,47 @@
+clear;
+close all;
+clc;
+
+fileNames = {'lp_admm_loss_results.mat', 'lp_loss_results.mat', 'ormc_loss_results.mat'};
+numFiles = numel(fileNames);
+matrices = cell(numFiles, 1);
+
+for i = 1:numFiles
+    data = load(fileNames{i});
+    matrices{i} = data.matrix;
+end
+
+db = [3, 5, 6, 9];
+observation_rate = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
+rows = length(db);
+cols = length(observation_rate);
+
+for i = 1:cols
+    figure;
+    z = zeros(length(db), numFiles);
+    for j = 1:numFiles
+        z(:, j) = matrices{j}(:, i);
+    end
+    bar(z);
+    title(sprintf('MSE vs SNR | Observation Rate = %f', observation_rate(i)));
+    xlabel('SNR');
+    ylabel('MSE');
+    xticklabels(db);
+    yscale log;
+    legend('$\ell_p$-ADMM', '$\ell_p$-reg', 'ORMC', 'Interpreter','LaTex');
+end
+
+for i = 1:rows
+    figure;
+    z = zeros(cols, numFiles);
+    for j = 1:numFiles
+        z(:, j) = matrices{j}(i, :);
+    end
+    bar(z);
+    title(sprintf('MSE vs Observation Rate | SNR = %f', db(i)));
+    xlabel('Observation Rate');
+    ylabel('MSE');
+    xticklabels(observation_rate);
+    yscale log;
+    legend('$\ell_p$-ADMM', '$\ell_p$-reg', 'ORMC', 'Interpreter','LaTex');
+end
