@@ -46,7 +46,7 @@ for i = 1:length(db)
     end
 end
 
-% Plotting
+%% Plotting
 % For a comprehensive plot, we might plot each observation ratio as a separate line
 figure;
 hold on;
@@ -58,6 +58,7 @@ end
 legend('show');
 xlabel('dB Level');
 ylabel('Average Normalized MSE Loss');
+yscale log
 title('L1 Regression Loss');
 grid on;
 hold off;

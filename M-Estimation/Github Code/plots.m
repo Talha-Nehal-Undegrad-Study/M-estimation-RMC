@@ -1,7 +1,7 @@
 clc; clear; close all;
 
-mat_files = {'ormc_loss_results.mat', 'lp_admm_loss_results.mat', 'lp_loss_results.mat', 'l0_bcd_loss_results'};
-lgd = {'ORMC', '$\ell_p$-ADMM', '$\ell_p$-reg', '$\ell_0$-BCD'};
+mat_files = {'ormc_loss_results.mat', 'lp_admm_loss_results.mat', 'lp_loss_results.mat', 'm_est_loss_results.mat', 'l0_bcd_loss_results'};
+lgd = {'ORMC', '$\ell_p$-ADMM', '$\ell_p$-reg', 'M-estimation', '$\ell_0$-BCD'};
 num_files = numel(mat_files);
 matrices  = cell(num_files, 1);
 
