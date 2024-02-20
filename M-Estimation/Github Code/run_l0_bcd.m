@@ -6,8 +6,8 @@
 %%
 clear variables
 close all hidden
-[r, c, rak] = deal(400,500,10);
-M = randn(400, 10)* randn(10,500);
+[r, c, rak] = deal(150,300,10);
+M = randn(r, rak)* randn(rak,c);
 
 % per = 0.5;  % Obervation ratio
 % dB =3;      % SNR
