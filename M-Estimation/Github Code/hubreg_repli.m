@@ -26,8 +26,9 @@ for i = 1:maxiter
     v_upd = v_cell{i};
     % Apped random guess initially
     for j = 1: n2
+        [vj_kupd, scale_kupd, ~] = real_hubreg(getxj(X_Omega, indices_col, j), get_u(u_cell{i}, indices_col, j), c);
         % [vj_kupd, scale_kupd, ~] = real_hubreg(getxj(X_Omega, indices_col, j), get_u(u_cell{i}, indices_col, j), c, sigma_cell_for_v{j}, v_upd(:, j), n2);
-        [vj_kupd, scale_kupd] = Mreg(getxj(X_Omega, indices_col, j), get_u(u_cell{i}, indices_col, j), 'huber');
+        % [vj_kupd, scale_kupd] = Mreg(getxj(X_Omega, indices_col, j), get_u(u_cell{i}, indices_col, j), 'huber');
         v_upd(:, j) = vj_kupd;
         sigma_cell_for_v{j + 1} = scale_kupd;
     end
@@ -38,8 +39,9 @@ for i = 1:maxiter
     
     u_upd = u_cell{i};
     for z = 1:n1
+       [ui_upd, scale_kupd, ~] = real_hubreg(getxi(X_Omega, indices_row, z), (get_v(v_cell{i + 1}, indices_row, z))', c);
        % [ui_upd, scale_kupd, ~] = real_hubreg(getxi(X_Omega, indices_row, z), (get_v(v_cell{i + 1}, indices_row, z))', c, sigma_for_u{z}, (u_upd(z, :))', n1);
-       [ui_upd, scale_kupd] = Mreg(getxi(X_Omega, indices_row, z), (get_v(v_cell{i + 1}, indices_row, z))', 'huber');
+       % [ui_upd, scale_kupd] = Mreg(getxi(X_Omega, indices_row, z), (get_v(v_cell{i + 1}, indices_row, z))', 'huber');
         u_upd(z, :) = ui_upd;
         sigma_cell_for_v{z + 1} = scale_kupd;
     end

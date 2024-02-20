@@ -49,7 +49,7 @@ switch lossfun
         if isreal(y)
             c = 1.345; % 95 percent ARE
         else
-            c =1.214; % 95 percent ARE
+            c = 1.214; % 95 percent ARE
         end
         wfun = @(x) whub(x,c); 
     case 'tukey'
