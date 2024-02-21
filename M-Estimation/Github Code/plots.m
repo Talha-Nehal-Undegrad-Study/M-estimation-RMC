@@ -12,6 +12,12 @@ end
 snr = [3, 5, 6, 9];
 obs = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8];
 
+folder_name = 'By Observation Rate';
+
+if ~exist(folder_name, 'dir')
+    mkdir(folder_name);
+end
+
 for i = 1:length(obs)
     figure;
     z = zeros(length(snr), num_files);
@@ -27,6 +33,15 @@ for i = 1:length(obs)
     xticklabels(snr);
     yscale log;
     legend(lgd, 'Interpreter', 'LaTex');
+
+    file_name = sprintf('%s/MSE_vs_SNR_Observation_Rate_%f.png', folder_name, obs(i));
+    saveas(gcf, file_name);
+end
+
+folder_name = 'By SNR';
+
+if ~exist(folder_name, 'dir')
+    mkdir(folder_name);
 end
 
 for i = 1:length(snr)
@@ -44,4 +59,7 @@ for i = 1:length(snr)
     xticklabels(obs);
     yscale log;
     legend(lgd, 'Interpreter', 'LaTex');
+
+    file_name = sprintf('%s/MSE_vs_Observation_Rate_SNR_%f.png', folder_name, snr(i));
+    saveas(gcf, file_name);
 end
