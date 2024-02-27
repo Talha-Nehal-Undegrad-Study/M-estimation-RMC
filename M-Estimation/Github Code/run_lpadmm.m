@@ -1,3 +1,4 @@
+% Depdancies: algo_synthetic_generation, lpadmm
 % Initialization
 
 db = [3, 5, 6, 9]; % DB values cant be negative for some reason - loss was in millions!

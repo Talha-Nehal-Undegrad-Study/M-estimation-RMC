@@ -1,3 +1,4 @@
+% Dependancies: None
 function M_masked = maskMatrix(M, idx)
     % maskMatrix Sets elements of M to zero except for those specified in idx.
     %
