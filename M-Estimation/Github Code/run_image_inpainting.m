@@ -6,20 +6,20 @@
 %%
 clear variables
 close all hidden
-[r, c, rak] = deal(150, 300, 10);
+[r, c, rak] = deal(321, 481, 10);
 % M = randn(r, rak) * randn(rak, c);
 
 dB = 5;
 per = 0.5;
-models = {'ormc', 'lp_admm', 'lp_reg', 'm_est', 'l0_bcd'};
-matrix = zeros(length(models), 8);
+models = {'l0_bcd'};
+PSNRs = zeros(length(models), 8);
+SSIMs = zeros(length(models), 8);
 
 %%
 
 for m = 1:length(models)
     for i = 1:8
-        M = imread(['C:\Users\HP\GitHub Workspace\M-estimation-RMC\M-Estimation\Image_Inpainting_Dataset\', num2str(i), '.jpg']);
-        M = rgb2gray(M);
+        M = rgb2gray(im2double(imread(['C:\Users\HP\GitHub Workspace\M-estimation-RMC\M-Estimation\Image_Inpainting_Dataset\', num2str(i)], 'jpg')));
         array_Omega = binornd(1, per, [r, c]);
         M_Omega = M .* array_Omega;
         omega = find(array_Omega(:) == 1);
@@ -29,8 +29,9 @@ for m = 1:length(models)
         M_Omega = M_Omega + Noise;
         maxiter = 50;
         
-        MSE = image_inpainting(M, M_Omega, rak, maxiter, models{m});
-        matrix(m, i) = min(MSE);
+        [PSNR, SSIM] = image_inpainting(M, M_Omega, rak, maxiter, models{m});
+        PSNRs(m, i) = PSNR;
+        SSIMs(m, i) = SSIM;
     end
 end
 

@@ -54,6 +54,6 @@ for iter = 1 : maxiter
 
 end
 Out_X = X;
-PSNR = psnr(X, M);
-SSIM = ssim(X, M);
+PSNR = psnr();
+PSNR = ssim();
 end

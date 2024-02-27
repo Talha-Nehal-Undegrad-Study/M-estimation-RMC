@@ -6,35 +6,31 @@
 %%
 clear variables
 close all hidden
-[r, c, rak] = deal(150, 300, 10);
+[r, c, rak] = deal(321, 481, 10);
 % M = randn(r, rak) * randn(rak, c);
 
 dB = 5;
 per = 0.5;
-models = {'ormc', 'lp_admm', 'lp_reg', 'm_est', 'l0_bcd'};
+models = {'l0_bcd'};
+matrix = zeros(length(models), 8);
 
-trials = {'Standing','Walking'} 
-for trialnum = 1:length(trials) 
-    trial = trials{trialnum} 
-    eval(['acc_' trial '= data.sub.(trial).acceleration']) 
-end 
 %%
 
 for m = 1:length(models)
     for i = 1:8
-        M = imread(['C:\Users\HP\GitHub Workspace\M-estimation-RMC\M-Estimation\Image_Inpainting_Dataset\', num2str(i), '.jpg']);
-        M = rgb2gray(M);
-        array_Omega = binornd(1, per(p), [r, c]);
+        M = imread(['C:\Users\HP\GitHub Workspace\M-estimation-RMC\M-Estimation\Image_Inpainting_Dataset\', num2str(i)], 'jpg');
+        M = rgb2gray(M, );
+        array_Omega = binornd(1, per, [r, c]);
         M_Omega = M .* array_Omega;
         omega = find(array_Omega(:) == 1);
-        noise = Gaussian_noise(M_Omega(omega), 'GM', dB(d));
+        noise = Gaussian_noise(M_Omega(omega), 'GM', dB);
         Noise = zeros(size(M_Omega));
         Noise(omega) = noise;
         M_Omega = M_Omega + Noise;
         maxiter = 50;
         
-        MSE = image_inpainting(M, M_Omega, rak, maxiter, models{});
-        matrix(d, p) = min(MSE);
+        MSE = image_inpainting(M, M_Omega, rak, maxiter, models{m});
+        matrix(m, i) = min(MSE);
     end
 end
 
