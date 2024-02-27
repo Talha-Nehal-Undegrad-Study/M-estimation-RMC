@@ -3,6 +3,8 @@
 % X. P. Li, Z.-L. Shi, Q. Liu and H. C. So, "Fast robust matrix completion
 % via ?0-norm minimization" IEEE Transactions on Cybernetics, 2022.
 
+% Dependancies: Gaussian_noise, L0_BCD
+
 %%
 clear variables
 close all hidden
