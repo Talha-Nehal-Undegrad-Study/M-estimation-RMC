@@ -1,4 +1,4 @@
-function MSE = image_inpainting(M, M_Omega, Omega_array, rak, maxiter, model)
+function MSE = image_inpainting(M, M_Omega, rak, maxiter, model)
 %%
 % If you use this code, please cite the following paper in your corresponding work. Thanks!
 % X. P. Li, Z.-L. Shi, Q. Liu and H. C. So, "Fast robust matrix completion

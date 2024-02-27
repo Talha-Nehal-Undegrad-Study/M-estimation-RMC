@@ -14,18 +14,21 @@ per = 0.5;
 
 %%
 
-M = randn(r, rak) * randn(rak, c);
-array_Omega = binornd(1, per(p), [r, c]);
-M_Omega = M .* array_Omega;
-omega = find(array_Omega(:) == 1);
-noise = Gaussian_noise(M_Omega(omega), 'GM', dB(d));
-Noise = zeros(size(M_Omega));
-Noise(omega) = noise;
-M_Omega = M_Omega + Noise;
-maxiter = 50;
-
-[X, MSE, loss] = L0_BCD(M, M_Omega, array_Omega, rak, maxiter);
-matrix(d, p) = min(MSE);
+for i = 1:8
+    M = imread(['C:\Users\HP\GitHub Workspace\M-estimation-RMC\M-Estimation\Image_Inpainting_Dataset\', num2str(i), '.jpg']);
+    M = rgb2gray(M);
+    array_Omega = binornd(1, per(p), [r, c]);
+    M_Omega = M .* array_Omega;
+    omega = find(array_Omega(:) == 1);
+    noise = Gaussian_noise(M_Omega(omega), 'GM', dB(d));
+    Noise = zeros(size(M_Omega));
+    Noise(omega) = noise;
+    M_Omega = M_Omega + Noise;
+    maxiter = 50;
+    
+    MSE = image_inpainting(M, M_Omega, rak, maxiter, );
+    matrix(d, p) = min(MSE);
+end
 
 %%
 
