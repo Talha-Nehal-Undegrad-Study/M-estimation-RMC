@@ -2,7 +2,7 @@ function [PSNR, SSIM] = image_inpainting(M, M_Omega, rak, maxiter, model)
 
 %% Get array_Omega for L0-BCD format and Lp-reg/Lp-admm format
 array_Omega_L0 = (M_Omega ~= 0); % L0-BCD Format
-array_Omega_Lp = findNonZeroIndices(M_Omega); %Lp-reg/Lp-admm
+array_Omega_Lp = findNonZeroIndices(M_Omega); %Lp-reg/Lp-admm Format
 
 % Condition on Model
 switch model
