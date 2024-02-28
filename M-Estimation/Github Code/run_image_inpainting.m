@@ -1,12 +1,11 @@
 %%
-% If you use this code, please cite the following paper in your corresponding work. Thanks!
-% X. P. Li, Z.-L. Shi, Q. Liu and H. C. So, "Fast robust matrix completion
-% via ?0-norm minimization" IEEE Transactions on Cybernetics, 2022.
+% Runs each algorithm on image inpainting task and stores PSNR and SSIM as
+% metrics
 
 %%
 clear variables
 close all hidden
-[r, c, rak] = deal(150, 300, 10);
+[r, c, rak] = deal(400, 500, 10);
 % M = randn(r, rak) * randn(rak, c);
 
 dB = 5;
@@ -37,6 +36,7 @@ for m = 1:length(models)
         
 
         [PSNR, SSIM] = image_inpainting(M, M_Omega, rak, maxiter, models{m});
+        fprintf('Model: %s, PSNR of Image %i = %f, SSIM of Image %i = %f', models{m}, i, PSNR, i, SSIM);
         
         PSNRs(m, i) = PSNR;
         SSIMs(m, i) = SSIM;
