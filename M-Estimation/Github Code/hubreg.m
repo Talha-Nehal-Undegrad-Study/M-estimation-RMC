@@ -2,6 +2,9 @@ function [b1, sig1, iter] = hubreg(y,X,c,sig0,b0,printitn)
 % [b1, sig1, iter] = hubreg(y,X,...)
 % hubreg computes the joint M-estimates of regression and scale using 
 % Huber's criterion. Function worsk for both real- and complex-valued data.
+
+% Dependancies: psihub
+
 %
 % INPUT: 
 %        y: Numeric data vector of size N x 1 (output, respones)
